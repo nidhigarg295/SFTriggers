@@ -1,0 +1,21 @@
+public class OpportunityTriggerHandler {
+    public static void handler(List<Opportunity> oppList){
+        for(Opportunity opp :oppList ){
+            if(opp.Amount<> null && opp.Discount__c <> null){
+              Decimal Discount = (opp.Discount__c * opp.Amount)/100;
+                opp.Discounted_Price__c = Discount;
+            } 
+        }
+    }
+    public static void restrictAmountOnClosedWon(List<Opportunity>newRecords, Map<id,Opportunity>oldRecordMap){
+        for(Opportunity newRecord:newRecords){
+            system.debug('inside for loop');
+             Opportunity oldRecord = oldrecordMap.get(newRecord.Id);   
+                    if(oldRecord.StageName == 'Closed Won'&&newRecord.StageName == 'Closed Won'&& oldRecord.Amount != newRecord.Amount){
+                        newRecord.Amount.addError('Amount cannot be updated when stage is closed won');
+                    }
+                
+            
+        }
+    }
+}
